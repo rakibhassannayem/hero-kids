@@ -1,6 +1,7 @@
 import { getSingleProduct } from "@/actions/server/product";
+import CartButton from "@/components/buttons/CartButton";
 import Image from "next/image";
-import { FaStar, FaShoppingCart, FaCheckCircle } from "react-icons/fa";
+import { FaStar, FaCheckCircle } from "react-icons/fa";
 
 const ProductDetails = async ({ params }) => {
   const { id } = await params;
@@ -63,10 +64,7 @@ const ProductDetails = async ({ params }) => {
         </div>
 
         {/* Add to cart */}
-        <button className="btn btn-primary mt-5 gap-2">
-          <FaShoppingCart />
-          Add to Cart
-        </button>
+        <CartButton product={product} />
 
         {/* Info */}
         {info?.length > 0 && (
