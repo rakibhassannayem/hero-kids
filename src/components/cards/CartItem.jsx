@@ -1,12 +1,19 @@
 "use client";
 
-import { deleteItemsFromCart } from "@/actions/server/cart";
+import {
+  decreaseItemDb,
+  deleteItemsFromCart,
+  increaseItemDb,
+} from "@/actions/server/cart";
 import Image from "next/image";
+import { useState } from "react";
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-const CartItem = ({ item, removeItem }) => {
+const CartItem = ({ item, removeItem, updateQuantity }) => {
   const { _id, title, image, quantity, price } = item;
+
+  const [loading, setLoading] = useState(false);
 
   const handleDeleteCart = async () => {
     Swal.fire({
@@ -39,6 +46,28 @@ const CartItem = ({ item, removeItem }) => {
     });
   };
 
+  const onIncrease = async () => {
+    setLoading(true);
+    const result = await increaseItemDb(_id, quantity);
+
+    if (result.success) {
+      Swal.fire("success", "Quantity increased", "success");
+      updateQuantity(_id, quantity + 1);
+    }
+    setLoading(false);
+  };
+
+  const onDecrease = async () => {
+    setLoading(true);
+    const result = await decreaseItemDb(_id, quantity);
+
+    if (result.success) {
+      Swal.fire("success", "Quantity Dcreased", "success");
+      updateQuantity(_id, quantity - 1);
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="flex gap-4 items-center p-4 rounded-xl border border-base-300 bg-base-100 shadow-sm">
       {/* Image */}
@@ -59,15 +88,20 @@ const CartItem = ({ item, removeItem }) => {
         {/* Quantity Controls */}
         <div className="flex items-center gap-3">
           <button
+            onClick={onDecrease}
             className="btn btn-sm btn-outline"
-            disabled={quantity <= 1}
+            disabled={quantity === 1 || loading}
           >
             <FaMinus />
           </button>
 
           <span className="font-semibold min-w-6 text-center">{quantity}</span>
 
-          <button className="btn btn-sm btn-outline">
+          <button
+            onClick={onIncrease}
+            className="btn btn-sm btn-outline"
+            disabled={quantity === 10 || loading}
+          >
             <FaPlus />
           </button>
         </div>
