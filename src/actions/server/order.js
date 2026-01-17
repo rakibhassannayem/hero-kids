@@ -19,21 +19,22 @@ export const createOrder = async (payload) => {
     return { success: false };
   }
 
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
   const newOrder = {
     createdAt: new Date().toISOString(),
     items: cart,
     ...payload,
+    totalPrice,
   };
   const result = await orderColletion.insertOne(newOrder);
 
   if (Boolean(result.insertedId)) {
     const result = await clearCart();
   }
-
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
 
   await sendEmail({
     to: user.email,

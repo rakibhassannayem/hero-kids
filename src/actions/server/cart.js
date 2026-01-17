@@ -9,25 +9,29 @@ const { dbConnect, collections } = require("@/lib/dbconnect");
 
 const cartCollection = dbConnect(collections.CART);
 
-export const handleCart = async ({ product, inc = true }) => {
+export const handleCart = async (productId) => {
   const { user } = await getServerSession(authOptions);
   if (!user) return { success: false };
 
   // getCartItem -> user.email && productId
-  const query = { email: user?.email, productId: product._id };
+  const query = { email: user?.email, productId };
   const isAdded = await cartCollection.findOne(query);
 
   if (isAdded) {
     // if Exists: update Cart
     const updatedData = {
       $inc: {
-        quantity: inc ? 1 : -1,
+        quantity: 1,
       },
     };
     const result = await cartCollection.updateOne(query, updatedData);
 
     return { success: Boolean(result.modifiedCount) };
   } else {
+    const product = await dbConnect(collections.PRODUCTS).findOne({
+      _id: new ObjectId(productId),
+    });
+
     // Not Exists: insert Cart
     const newData = {
       productId: product._id,
@@ -64,7 +68,7 @@ export const deleteItemsFromCart = async (id) => {
   if (id.length != 24) {
     return { success: false };
   }
-  const query = { _id: new ObjectId(id) };
+  const query = { _id: new ObjectId(id), email: user?.email };
 
   const result = await cartCollection.deleteOne(query);
 
@@ -86,7 +90,7 @@ export const increaseItemDb = async (id, quantity) => {
     };
   }
 
-  const query = { _id: new ObjectId(id) };
+  const query = { _id: new ObjectId(id), email: user?.email };
   const updatedData = {
     $inc: {
       quantity: 1,
@@ -108,7 +112,7 @@ export const decreaseItemDb = async (id, quantity) => {
     };
   }
 
-  const query = { _id: new ObjectId(id) };
+  const query = { _id: new ObjectId(id), email: user?.email };
   const updatedData = {
     $inc: {
       quantity: -1,
