@@ -1,11 +1,13 @@
 "use client";
 import { createOrder } from "@/actions/server/order";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 import Swal from "sweetalert2";
 
 const CheckOut = ({ cartItems = [] }) => {
   const session = useSession();
+  const router = useRouter();
 
   const totalItems = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
@@ -33,9 +35,11 @@ const CheckOut = ({ cartItems = [] }) => {
     const result = await createOrder(payload);
     if (result.success) {
       Swal.fire("success", "Order Added!", "success");
+      router.push("/");
     } else {
       Swal.fire("error", "Something went wrong!", "error");
-    }
+      router.push("/cart");
+    } 
   };
 
   if (session.status == "loading") {
