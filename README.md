@@ -1,5 +1,5 @@
 # Hero Kidzz - Project Assets
-<img src="/assets/Screenshot.png">
+<img src="public/assets/Screenshot.png">
 
 ## 🚀 Live Demo
 
