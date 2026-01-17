@@ -3,7 +3,6 @@
 import { authOptions } from "@/lib/authOption";
 import { ObjectId } from "mongodb";
 import { getServerSession } from "next-auth";
-import { revalidatePath } from "next/cache";
 import { cache } from "react";
 
 const { dbConnect, collections } = require("@/lib/dbconnect");
@@ -118,4 +117,14 @@ export const decreaseItemDb = async (id, quantity) => {
   const result = await cartCollection.updateOne(query, updatedData);
 
   return { success: Boolean(result.modifiedCount) };
+};
+
+export const clearCart = async () => {
+  const { user } = await getServerSession(authOptions);
+  if (!user) return { success: false };
+
+  const query = { email: user?.email };
+  const result = await cartCollection.deleteMany(query);
+
+  return result;
 };
