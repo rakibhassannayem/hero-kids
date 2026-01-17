@@ -1,6 +1,10 @@
 # Hero Kidzz - Project Assets
-<img src="assets/hero.png">
-[Live](https://hero-kids-hulbcwqwi-rakib-hassan-nayems-projects.vercel.app/)
+<img src="/assets/Screenshot.png">
+
+## 🚀 Live Demo
+
+[**Visit Live Website**](https://hero-kids-hulbcwqwi-rakib-hassan-nayems-projects.vercel.app/)
+
 ## Overview
 
 Hero Kidzz is a small, single-vendor e-commerce web application designed for selling children's products. This repository contains all project assets including images, icons, and media files.
